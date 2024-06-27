@@ -55,7 +55,7 @@ html,
 }
 
 .auth-wrapper .form-control:focus {
-  border-color: #167bff;
+  border-color: #ffb116;
   box-shadow: none;
 }
 

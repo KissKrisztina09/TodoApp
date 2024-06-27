@@ -1,7 +1,21 @@
 import React, {Component} from "react";
+import TodoForm  from "./TodoForm";
+import TodoList from "./TodoList";
 
 export default class UserDetails extends Component{
-componentDidMount(){
+
+  constructor(props){
+    super(props);
+    this.state = {
+      userData: {},
+      tasks: [],
+      title: '',
+      status: '',
+      dueDate: ''
+    }
+  }
+
+  componentDidMount(){
     fetch("http://localhost:5000/userDetails", {
         method: "POST",
         headers: {
@@ -10,26 +24,27 @@ componentDidMount(){
         },
         body: JSON.stringify({token:window.localStorage.getItem("token")}),
       })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        console.log(data, "userLogin");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+        console.log(data, "userData");
+        this.setState({userData: data.data });
       });
 }
 
 render(){
     return (
-    <div>
-        Name<h1></h1>
-    </div>)
-    
-}
+      <div>
+        <h2>HI {this.state.userData.fname}  {this.state.userData.lname} !</h2>
+        <div>
+          <TodoList/>
+        </div>
+      </div>
 
+
+   
+
+
+    );
+  }
+    
 }

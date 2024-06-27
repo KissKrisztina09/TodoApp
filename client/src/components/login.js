@@ -27,7 +27,7 @@ export default class Login extends Component {
     .then((res) => res.json())
     .then((data) => {
       console.log(data, "userLogin");
-      if(data.status == "ok"){
+      if(data.status === "ok"){
         alert ("Login successful!");
         window.localStorage.setItem("token", data.data);
         window.location.href ="/userDetails";

@@ -3,9 +3,11 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 
 const JWT_Secret = "fjvfdnvgdenglregn54t4t5t56";
 
@@ -22,16 +24,19 @@ mongoose.connect(mongoUrl, {
   
   require('./userDetails');
   const User = mongoose.model('users');
+
+  require('./todoDetails')
+  const Todo = mongoose.model('tasks');
   
   app.use(express.json());
+
+
   
   app.post('/register', async (req, res) => {
     const { fname, lname, email, password } = req.body;
 
-    // Log the received data
     console.log("Received data:", req.body);
 
-    // Check if all required fields are provided
     if (!fname || !lname || !email || !password) {
         return res.status(400).json({ error: 'All fields are required!' });
     }
@@ -62,7 +67,7 @@ mongoose.connect(mongoUrl, {
     }
 
     if(await bcrypt.compare(password, user.password)){
-        const token = jwt.sign({}, JWT_Secret);
+        const token = jwt.sign({email: user.email}, JWT_Secret);
 
         if(res.status(201)){
             return res.json({status:"ok", data: token});  
@@ -87,6 +92,43 @@ mongoose.connect(mongoUrl, {
         }catch(error){}
 
   });
+
+  app.post('/addTask', async (req, res) => {
+    const { token, title, dueDate } = req.body;
+
+    if (!token) {
+        return res.status(400).json({ error: 'Token must be provided' });
+    }
+    try {
+        const user = jwt.verify(token, JWT_Secret);
+        const userId = user.email;
+
+        await Todo.create({title, dueDate, status:'todo', userId});
+        res.status(201).json({ status: 'ok'});
+    } catch (error) {
+        console.error('Error creating task:', error);
+        res.status(500).json({ error: 'Error creating task!', message: error.message });
+    }
+});
+
+app.get('/tasks', async (req, res) => {
+    const token = req.headers.authorization;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        const decodedToken = jwt.verify(token, JWT_Secret);
+        const userId = decodedToken.email;
+        const tasks = await Todo.find({ userId });
+        res.status(200).json(tasks);
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ error: 'Error fetching tasks!', message: error.message });
+    }
+});
+
 
 
 app.listen(5000, ()=>{

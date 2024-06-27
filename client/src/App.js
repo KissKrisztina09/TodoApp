@@ -1,10 +1,9 @@
-import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
-import Login from './components/login'
-import SignUp from './components/signUp';
-import UserDetails from './components/userDetails';
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import Login from './components/Login'
+import SignUp from './components/SignUp';
+import UserDetails from './components/UserDetails';
 
 function App() {
   return (
