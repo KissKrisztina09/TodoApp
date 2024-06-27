@@ -1,21 +1,62 @@
-import React, {useState} from 'react';
-import { Component } from 'react';
-import { useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import TodoForm from './TodoForm';
 import Todo from './Todo';
 
 function TodoList() {
     const [todos, setTodos] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchTasks();
     }, []);
 
+    const editTodo = async (id, newValue) => {
+        try {
+            const token = window.localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/tasks/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newValue),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to edit todo');
+            }
+    
+            const updatedTodos = todos.map(todo =>
+                todo._id === id ? { ...todo, ...newValue } : todo
+            );
+            setTodos(updatedTodos);
+        } catch (error) {
+            console.error('Error editing todo:', error);
+        }
+    };
+
+    const removeTodo = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/tasks/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                const updatedTodos = todos.filter((todo) => todo.id !== id);
+                setTodos(updatedTodos);
+            } else {
+                console.error('Failed to delete todo:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error deleting todo:', error);
+        }
+    };
+
     const fetchTasks = async () => {
         try {
             const token = window.localStorage.getItem('token');
-            console.log('Token:', token); // Log the token here
+            console.log('Token:', token);
             const response = await fetch('http://localhost:5000/tasks', {
                 headers: {
                     Authorization: token,
@@ -46,36 +87,16 @@ function TodoList() {
 
     }
   
-    const completeTodo = async (id) => {
-        try {
-            const response = await fetch(`http://localhost:5000/tasks/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                },
-                body: JSON.stringify({ isComplete: true }),
-            });
-            if (response.ok) {
-                const updatedTodos = todos.map((todo) =>
-                    todo.id === id ? { ...todo, isComplete: true } : todo
-                );
-                setTodos(updatedTodos);
-            } else {
-                console.error('Failed to complete todo:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error completing todo:', error);
-        }
-    };
-
     return (
     <div>
-        <h1>Here is your todo list: </h1>
+        <h1 className='title'>Your todo list: </h1>
         <TodoForm onSubmit={addTodo}/>
         <Todo
             todos={todos}
+            removeTodo={removeTodo}
+            editTodo={editTodo}
         />
+
     </div>
   )
 }

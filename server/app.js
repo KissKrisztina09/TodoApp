@@ -129,6 +129,40 @@ app.get('/tasks', async (req, res) => {
     }
 });
 
+app.delete('/tasks/:id', async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const deletedTask = await Todo.findOneAndDelete({ _id: taskId});
+        if (!deletedTask) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+        res.status(200).json({ message: 'Task deleted successfully', deletedTask });
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        res.status(500).json({ error: 'Error deleting task!', message: error.message });
+    }
+});
+
+app.patch('/tasks/:id', async (req, res) => {
+    const { id } = req.params;
+    const { title, status, dueDate } = req.body;
+
+    try {
+        const updatedTodo = await Todo.findByIdAndUpdate(id, { title, status, dueDate }, { new: true });
+
+        if (!updatedTodo) {
+            return res.status(404).json({ error: 'Todo not found' });
+        }
+
+        res.status(200).json(updatedTodo);
+    } catch (error) {
+        console.error('Error updating todo:', error);
+        res.status(500).json({ error: 'Error updating todo' });
+    }
+});
+
+
 
 
 app.listen(5000, ()=>{

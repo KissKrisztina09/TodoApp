@@ -34,16 +34,11 @@ export default class UserDetails extends Component{
 render(){
     return (
       <div>
-        <h2>HI {this.state.userData.fname}  {this.state.userData.lname} !</h2>
+        <h2>HI, {this.state.userData.fname}  {this.state.userData.lname}!</h2>
         <div>
           <TodoList/>
         </div>
       </div>
-
-
-   
-
-
     );
   }
     
