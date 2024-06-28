@@ -153,7 +153,7 @@ html,
 }
 
 .icon:hover, .icon-edit:hover {
-  color: #ac8f47; /* Change color on hover as needed */
+  color: #ac8f47;
 }
 
 .todo-form-container {
@@ -194,3 +194,56 @@ html,
   font-size: 1.5rem;
   color: #333;
 }
+
+
+.center-text {
+  text-align: center;
+}
+
+.todo-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.todo-table th, .todo-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.todo-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.icons {
+  display: flex;
+  gap: 10px;
+}
+
+.icon, .icon-edit, .status-icon {
+  cursor: pointer;
+  font-size: 1.5em;
+}
+
+
+input[type="text"], input[type="date"], select {
+  width: 100%;
+  padding: 8px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+button, btn{
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: #ffb116;;
+  color: white;
+  border: none;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+

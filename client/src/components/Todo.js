@@ -38,11 +38,11 @@ const Todo = ({ todos, removeTodo, editTodo }) => {
     };
 
     const changeStatusToInProgress = (id) => {
-        editTodo(id, {status: 'in progress' });
+        editTodo(id, { status: 'in progress' });
     };
 
     const changeStatusToDone = (id) => {
-        editTodo(id, {status: 'done' });
+        editTodo(id, { status: 'done' });
     };
 
     const handleUpdate = (id) => {
@@ -50,18 +50,22 @@ const Todo = ({ todos, removeTodo, editTodo }) => {
         setEditId(null);
     };
 
+    const handleRemoveTodo = async (id) => {
+        setTasks(prevTasks => prevTasks.filter(task => task._id !== id));
+    };
+
     const getStatusButton = (status, id) => {
         switch (status) {
             case 'todo':
                 return (
                     <button className="status-button" onClick={() => changeStatusToInProgress(id)}>
-                        <VscDebugStart className='btn-icon'/>
+                        <VscDebugStart className='btn-icon' />
                     </button>
                 );
             case 'in progress':
                 return (
                     <button className="status-button" onClick={() => changeStatusToDone(id)}>
-                        <CiPause1 className='btn-icon'/>
+                        <CiPause1 className='btn-icon' />
                     </button>
                 );
             case 'done':
@@ -118,28 +122,31 @@ const Todo = ({ todos, removeTodo, editTodo }) => {
                                 )}
                             </td>
                             <td>
-                                {editId === todo._id ? (
-                                    <input
-                                        type='text'
-                                        name='status'
-                                        value={editValues.status}
-                                        onChange={handleChange}
-                                        readOnly
-                                    />
-                                ) : (
-                                    <>
-                                        {todo.status}
-                                        {getStatusButton(todo.status, todo._id)}                                    </>
-                                )}
-                                
+                                <div className="status-cell">
+                                    {editId === todo._id ? (
+                                        <input
+                                            type='text'
+                                            name='status'
+                                            value={editValues.status}
+                                            onChange={handleChange}
+                                            readOnly
+                                            className="status-input"
+                                        />
+                                    ) : (
+                                        <>
+                                            {todo.status}
+                                            {getStatusButton(todo.status, todo._id)}
+                                        </>
+                                    )}
+                                </div>
                             </td>
                             <td>{formatDateTime(todo.dueDate)}</td>
                             <td className='icons'>
                                 {editId === todo._id ? (
-                                    <button onClick={() => handleUpdate(todo._id)}>Save</button>
+                                    <button className="todo-button" onClick={() => handleUpdate(todo._id)}>Save</button>
                                 ) : (
                                     <>
-                                        <MdDeleteOutline className='icon' onClick={() => removeTodo(todo._id)} />
+                                        <MdDeleteOutline className='icon' onClick={() => handleRemoveTodo(todo._id)} />
                                         <CiEdit className='icon-edit' onClick={() => editTodoHandler(todo)} />
                                     </>
                                 )}

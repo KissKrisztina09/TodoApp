@@ -12,7 +12,6 @@ function TodoForm({ edit, onSubmit }) {
   }, [edit]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
     const token = window.localStorage.getItem('token');
 
